@@ -13,10 +13,15 @@ secret_message = [
 secret_message_1=secret_message[0][3]
 secret_message_2=secret_message[1][9:13]
 secret_message_3=secret_message[2][5:15:2]
-secret_message_4=secret_message[3][7:13]
-secret_message_4=secret_message_4[::-1]
-secret_message_5=secret_message[4][16:21]
-secret_message_5=secret_message_5[::-1]
+# secret_message_4=secret_message[3][7:13]
+# secret_message_4=secret_message_4[::-1]
+# secret_message_5=secret_message[4][16:21]
+# secret_message_5=secret_message_5[::-1]
+
+# Можно в одну строку, если передавать индексы в обратном порядке с указанием шага "-1". Тоже работает
+secret_message_4 = secret_message[3][12:6:-1]
+secret_message_5 = secret_message[4][20:15:-1]
+
 secret_message_all=secret_message_1+" "+secret_message_2+" "+secret_message_3+" "+secret_message_4+" "+secret_message_5
 print(secret_message_all)
 
@@ -31,3 +36,5 @@ print(secret_message_all)
 # Если нужны вычисления и разные пробы - делайте это в консоли пайтона, тут нужен только результат
 
 # TODO вывести расшифрованное сообщение
+
+# Ok

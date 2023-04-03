@@ -49,3 +49,5 @@ policy_of_truth= violator_songs_dict ['Policy of Truth']
 blur_dress= violator_songs_dict['Blue Dress']
 another_sound_duration=sweetest_perfection+policy_of_truth+blur_dress
 print('А другие три песни звучат ',round(another_sound_duration,2),'минут')
+
+# Ok

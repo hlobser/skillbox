@@ -52,6 +52,7 @@ print('Лампа -', lamps_quantity, 'шт, стоимость', lamps_cost, '�
 # TODO здесь ваш код
 table_cost = store[goods['Стол']][0]['quantity'] * store[goods['Стол']][0]['price']+store[goods['Стол']][1]['quantity'] \
              * store[goods['Стол']][1]['price']
+             
 table_quantity=store[goods['Стол']][0]['quantity']+store[goods['Стол']][1]['quantity']
 print('Стол -', table_quantity, 'шт, стоимость', table_cost, 'руб')
 
@@ -73,6 +74,6 @@ print('Стул -', chair_quantity, 'шт, стоимость', chair_cost, 'р�
 
 
 
-
+# Ok 
 
 

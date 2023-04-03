@@ -30,5 +30,5 @@ print(zoo)
 print(zoo.index('lion')+1)#клетка в которой сидит лев
 print(zoo.index('lark')+1)#клетка в которой сидит жаворонок
 
-
+# Ok
 
