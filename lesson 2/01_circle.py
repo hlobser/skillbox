@@ -47,4 +47,5 @@ print(distance_2<=radius)
 # False
 # False
 
+# Ок
 
