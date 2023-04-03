@@ -29,3 +29,4 @@ print(garden_set - meadow_set)
 # TODO здесь ваш код
 print(meadow_set - garden_set)
 
+# Ок
