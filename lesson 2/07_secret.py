@@ -10,6 +10,15 @@ secret_message = [
     'ьд5фму3ежородт9г686буиимыкучшсал',
     'бсц59мегщ2лятьаьгенедыв9фк9ехб1а',
 ]
+secret_message_1=secret_message[0][3]
+secret_message_2=secret_message[1][9:13]
+secret_message_3=secret_message[2][5:15:2]
+secret_message_4=secret_message[3][7:13]
+secret_message_4=secret_message_4[::-1]
+secret_message_5=secret_message[4][16:21]
+secret_message_5=secret_message_5[::-1]
+secret_message_all=secret_message_1+" "+secret_message_2+" "+secret_message_3+" "+secret_message_4+" "+secret_message_5
+print(secret_message_all)
 
 # ключ к расшифровке:
 #   первое слово - 4-я буква
