@@ -33,12 +33,12 @@ else:
 # Определить, пройдет ли кирпич через отверстие (грани кирпича параллельны сторонам отверстия)
 
 hole_x, hole_y = 8, 9
-# brick_x, brick_y, brick_z = 11, 10, 2
-# brick_x, brick_y, brick_z = 11, 2, 10
-# brick_x, brick_y, brick_z = 10, 11, 2
-# brick_x, brick_y, brick_z = 10, 2, 11
-# brick_x, brick_y, brick_z = 2, 10, 11
-# brick_x, brick_y, brick_z = 2, 11, 10
+brick_x1, brick_y1, brick_z = 11, 10, 2
+brick_x2, brick_y2, brick_z = 11, 2, 10
+brick_x3, brick_y3, brick_z = 10, 11, 2
+brick_x4, brick_y4, brick_z = 10, 2, 11
+brick_x5, brick_y5, brick_z = 2, 10, 11
+brick_x6, brick_y6, brick_z = 2, 11, 10
 # brick_x, brick_y, brick_z = 3, 5, 6
 # brick_x, brick_y, brick_z = 3, 6, 5
 # brick_x, brick_y, brick_z = 6, 3, 5
@@ -52,7 +52,17 @@ hole_x, hole_y = 8, 9
 # brick_x, brick_y, brick_z = 3, 6, 11
 brick_x, brick_y, brick_z = 3, 11, 6
 # (просто раскоментировать нужную строку и проверить свой код)
-if hole_x >= brick_x and hole_y >= brick_y:
+if hole_x >= brick_x1 and hole_y >= brick_y1:
+    print('ДА')
+elif hole_x >= brick_x2 and hole_y >= brick_y2:
+    print('ДА')
+elif hole_x >= brick_x3 and hole_y >= brick_y3:
+    print('ДА')
+elif hole_x >= brick_x4 and hole_y >= brick_y4:
+    print('ДА')
+elif hole_x >= brick_x5 and hole_y >= brick_y5:
+    print('ДА')
+elif hole_x >= brick_x6 and hole_y >= brick_y6:
     print('ДА')
 else:
     print('НЕТ')
