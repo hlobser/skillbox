@@ -45,25 +45,26 @@ print('Лампа -', lamps_quantity, 'шт, стоимость', lamps_cost, '�
 
 # Вывести стоимость каждого товара на складе: один раз распечать сколько всего столов, стульев и т.д. на складе
 # Формат строки <товар> - <кол-во> шт, стоимость <общая стоимость> руб
-
+#
 # WARNING для знающих циклы: БЕЗ циклов. Да, с переменными; да, неэффективно; да, копипаста.
 # Это задание на ручное вычисление - что бы потом понять как работают циклы и насколько с ними проще жить.
 
 # TODO здесь ваш код
-table_cost = store[goods['Стол']][0]['quantity'] * store[goods['Стол']][0]['price']+store[goods['Стол']][1]['quantity'] \
-             * store[goods['Стол']][1]['price']
-             
-table_quantity=store[goods['Стол']][0]['quantity']+store[goods['Стол']][1]['quantity']
+table_cost = store[goods['Стол']][0]['quantity'] * store[goods['Стол']][0]['price'] + store[goods['Стол']][1][
+    'quantity'] * store[goods['Стол']][1]['price']
+
+table_quantity = store[goods['Стол']][0]['quantity'] + store[goods['Стол']][1]['quantity']
 print('Стол -', table_quantity, 'шт, стоимость', table_cost, 'руб')
 
-sofa_cost = store[goods['Диван']][0]['quantity'] * store[goods['Диван']][0]['price']+store[goods['Диван']][1]['quantity'] \
-             * store[goods['Диван']][1]['price']
-sofa_quantity=store[goods['Диван']][0]['quantity']+store[goods['Диван']][1]['quantity']
+sofa_cost = store[goods['Диван']][0]['quantity'] * store[goods['Диван']][0]['price'] + store[goods['Диван']][1][
+    'quantity'] * store[goods['Диван']][1]['price']
+sofa_quantity = store[goods['Диван']][0]['quantity'] + store[goods['Диван']][1]['quantity']
 print('Диван -', sofa_quantity, 'шт, стоимость', sofa_cost, 'руб')
 
-chair_cost = store[goods['Стул']][0]['quantity'] * store[goods['Стул']][0]['price']+store[goods['Стул']][1]['quantity'] \
-             * store[goods['Стул']][1]['price']+store[goods['Стул']][2]['quantity'] * store[goods['Стул']][2]['price']
-chair_quantity=store[goods['Стул']][0]['quantity']+store[goods['Стул']][1]['quantity']+store[goods['Стул']][2]['quantity']
+chair_cost = store[goods['Стул']][0]['quantity'] * store[goods['Стул']][0]['price'] + store[goods['Стул']][1][
+    'quantity'] * store[goods['Стул']][1]['price'] + store[goods['Стул']][2]['quantity'] * store[goods['Стул']][2]['price']
+chair_quantity = store[goods['Стул']][0]['quantity'] + store[goods['Стул']][1]['quantity'] + store[goods['Стул']][2][
+    'quantity']
 print('Стул -', chair_quantity, 'шт, стоимость', chair_cost, 'руб')
 ##########################################################################################
 # ВНИМАНИЕ! После того как __ВСЯ__ домашняя работа сделана и запушена на сервер,         #
