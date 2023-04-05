@@ -17,10 +17,14 @@ for i in rainbow_colors:
     sd.line(start_point, end_point, color=i, width=4)
     x1 += 5
     x2 += 5
-
+sd.clear_screen()
 # Усложненное задание, делать по желанию.
 # Нарисовать радугу дугами от окружности (cсм sd.circle) за нижним краем экрана,
 # поэкспериментировать с параметрами, что бы было красиво
 # TODO здесь ваш код
-
+center = sd.get_point(500, -500)
+radius = 700
+for i in rainbow_colors:
+    sd.circle(center, radius, i, width=15)
+    radius += 15
 sd.pause()
