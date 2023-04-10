@@ -124,8 +124,6 @@ def polygon(number_of_angles, start_point, angle, length, width):
                                         length=length, width=width)
         vector.draw()
         start_point = vector.end_point
-    # v = simple_draw.get_vector(start_point=start_point, angle=angle, length=length, width=width)
-    # v.draw()
     return vector
 
 
