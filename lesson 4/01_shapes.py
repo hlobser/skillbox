@@ -117,6 +117,10 @@ import simple_draw as sd
 # Не забудте в этой общей функции придумать, как устранить разрыв
 #   в начальной/конечной точках рисуемой фигуры (если он есть)
 
+def point(x, y):
+    simple_draw.get_point(x, y)
+    return simple_draw.get_point(x, y)
+
 
 def polygon(number_of_angles, start_point, angle, length, width):
     for i in range(1, number_of_angles+1):
@@ -127,26 +131,26 @@ def polygon(number_of_angles, start_point, angle, length, width):
     return vector
 
 
-def triangle(point, angle, length, width):
+def triangle(point, angle, length=100, width=3):
     polygon(3, start_point=point, angle=angle, length=length, width=width)
 
 
-def sqare(point, angle, length, width):
+def sqare(point, angle, length=100, width=3):
     polygon(4, start_point=point, angle=angle, length=length, width=width)
 
 
-def pentagon(point, angle, length, width):
+def pentagon(point, angle, length=100, width=3):
     polygon(5, start_point=point, angle=angle, length=length, width=width)
 
 
-def hexagon(point, angle, length, width):
+def hexagon(point, angle, length=100, width=3):
     polygon(6, start_point=point, angle=angle, length=length, width=width)
 
 
-triangle(point=simple_draw.get_point(500, 300), angle=5, length=150, width=3)
-sqare(point=simple_draw.get_point(200, 300), angle=12, length=100, width=3)
-pentagon(point=simple_draw.get_point(500, 50), angle=20, length=100, width=3)
-hexagon(point=simple_draw.get_point(200, 50), angle=0, length=100, width=3)
+triangle(point=point(500, 300), angle=5, length=150)
+sqare(point=point(200, 300), angle=12)
+pentagon(point=point(500, 50), angle=20)
+hexagon(point=point(200, 50), angle=0)
 # Часть 2-бис.
 # А теперь - сколько надо работы что бы внести изменения в код? Выгода на лицо :)
 # Поэтому среди программистов есть принцип D.R.Y. https://clck.ru/GEsA9
