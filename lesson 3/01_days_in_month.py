@@ -26,3 +26,5 @@ if 1 <= month <= 12:
         print(days_in_month)
 else:
     print('Такого месяца не существует')
+
+# Ok
