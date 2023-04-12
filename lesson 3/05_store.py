@@ -57,8 +57,4 @@ for product_name, product_code in goods.items():
     print(product_name,'-',total_quantity, ' шт, стоимость ',total_price, 'руб'  )
 
 
-
-
-
-
-
+# Ok
