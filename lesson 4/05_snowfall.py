@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import simple_draw as sd
-
+import random
 
 # На основе кода из практической части реализовать снегопад:
 # - создать списки данных для отрисовки N снежинок
 # - нарисовать падение этих N снежинок
 # - создать список рандомных длинн лучей снежинок (от 10 до 100) и пусть все снежинки будут разные
-
-N = 20
 
 # Пригодятся функции
 # sd.get_point()
@@ -18,15 +16,32 @@ N = 20
 # sd.user_want_exit()
 
 # TODO здесь ваш код
+N = 20
+snowflake_coordinate_list_x = []
+snowflake_coordinate_list_y = []
+snowflake_length_list = []
+
+for _ in range(0, N):
+    snowflake_coordinate_list_x.append(random.randrange(100, 500, 50))
+    snowflake_coordinate_list_y.append(random.randrange(400, 550, 10))
+    snowflake_length_list.append(random.randrange(10, 100, 10))
+
+
 while True:
     sd.clear_screen()
-    pass
-    pass
-    pass
-    sd.sleep(0.1)
+    for i, _ in enumerate(snowflake_coordinate_list_x):
+        point = sd.get_point(snowflake_coordinate_list_x[i], snowflake_coordinate_list_y[i])
+        sd.snowflake(center=point, length=snowflake_length_list[i])
+        snowflake_coordinate_list_y[i] -= 10
+        if snowflake_coordinate_list_y[i] < snowflake_length_list[i]:
+            snowflake_coordinate_list_y[i] += 10
+    else:
+        sd.sleep(0.1)
+        if snowflake_coordinate_list_y == snowflake_length_list:
+            break
+        continue
     if sd.user_want_exit():
         break
-
 sd.pause()
 
 # подсказка! для ускорения отрисовки можно
@@ -43,5 +58,3 @@ sd.pause()
 # - сделать сугоб внизу экрана - если снежинка долетает до низа, оставлять её там,
 #   и добавлять новую снежинку
 # Результат решения см https://youtu.be/XBx0JtxHiLg
-
-
