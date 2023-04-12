@@ -17,3 +17,12 @@ while a / b > 0:
     i += 1
 print(i)
 
+# Или так=)
+i = 0
+while a / b > 1:
+    a -= b
+    i += 1
+print(i)
+
+# OK
+
