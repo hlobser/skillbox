@@ -22,7 +22,7 @@ snowflake_coordinate_list_y = []
 snowflake_length_list = []
 
 for _ in range(0, N):
-    snowflake_coordinate_list_x.append(random.randrange(100, 500, 50))
+    snowflake_coordinate_list_x.append(random.randrange(100, 500, 100))
     snowflake_coordinate_list_y.append(random.randrange(400, 550, 10))
     snowflake_length_list.append(random.randrange(10, 100, 10))
 
