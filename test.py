@@ -1,8 +1,10 @@
-n, k = int(input()), int(input())
-list = [i for i in range(1, n+1)]
-del_index = k - 1
-del list[del_index]
-while len(list) > 1:
-    del_index = (del_index + k - 1) % len(list)
-    del list[del_index]
-print(*list)
+list_input = input().split()
+for k in range(len(list_input)):
+    list_input[k] = int(list_input[k])
+count = 0
+for i in range(len(list_input) - 1):
+    for j in range(len(list_input) - i - 1):
+        if list_input[j + 1] > list_input[j]:
+          count += 1
+    break
+print(count)
