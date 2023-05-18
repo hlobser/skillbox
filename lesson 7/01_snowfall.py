@@ -68,12 +68,15 @@ def append_flakes(count):
 #         break
 
 # шаг 2: создать снегопад - список объектов Снежинка в отдельном списке, обработку примерно так:
-flakes = get_flakes(count=2)  # создать список снежинок
+flakes = get_flakes(count=10)  # создать список снежинок
 while True:
     for flake in flakes:
         flake.clear_previous_picture()
         flake.move(10)
         flake.draw()
+        if not flake.can_fall():
+            flake.clear_previous_picture()
+            flakes.remove(flake)
     fallen_flakes = get_fallen_flakes()  # подчитать сколько снежинок уже упало
     if fallen_flakes:
         append_flakes(count=fallen_flakes)  # добавить еще сверху
