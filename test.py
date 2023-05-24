@@ -1,15 +1,15 @@
-n1, m1 = [int(i) for i in input().split()]
-matrix_1 = [[int(i) for i in input().split()] for _ in range(n1)]
-spase = input()
-n2, m2 = [int(i) for i in input().split()]
-matrix_2 = [[int(i) for i in input().split()] for _ in range(n2)]
+from copy import deepcopy
+n = int(input())
+matrix1 = [[int(i) for i in input().split()] for _ in range(n)]
+m = int(input())
+matrix2 = deepcopy(matrix1)
+for _ in range(1, m):
+    result_matrix = [[0] * n for _ in range(n)]
+    for i in range(n):
+        for j in range(n):
+            for k in range(n):
+                result_matrix[i][j] += matrix1[i][k]*matrix2[k][j]
+    matrix2 = deepcopy(result_matrix)
 
-matrix_product = [[0] * m2 for _ in range(n1)]
-for i_product in range(n1):
-    for j_product in range(m2):
-        for j in range(m1):
-            matrix_product[i_product][j_product] += matrix_1[i_product][j]*matrix_2[j][j_product]
-
-
-for k in matrix_product:
-    print(*k)
+for row in result_matrix:
+    print(*row)
