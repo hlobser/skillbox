@@ -118,7 +118,6 @@ class Wife:
         self.happiness = 100
         self.house = home
 
-
     def __str__(self):
         return f'{self.name} Сытость {self.fullness}, счастье {self.happiness}'
 
@@ -146,8 +145,6 @@ class Wife:
             self.pet_the_cat()
         else:
             self.eat()
-
-
 
     def eat(self):
         self.fullness += 30
@@ -218,21 +215,46 @@ class Cat:
         self.house.dirt += 10
         print(f'{self.name} подрал обои. Грязь {self.house.dirt}')
 
+class Child(Husband, Wife):
+
+    def __init__(self, name):
+        super().__init__(name=name)
+
+    def __str__(self):
+        return super().__str__()
+
+    def act(self):
+        if self.fullness < 20:
+            self.eat()
+        else:
+            self.sleep()
+
+    def eat(self):
+        self.fullness += 10
+        self.house.food_in_the_fridge -= 10
+        print(f'{self.name} покушал. Сытость {self.fullness}')
+
+    def sleep(self):
+        self.fullness -= 10
+        print(f'{self.name} спал целый день. Сытость {self.fullness}')
 
 home = House()
 serge = Husband(name='Сережа')
 masha = Wife(name='Маша')
 hulk = Cat(name='Халк')
+jonh = Child(name='Джон')
 
 for day in range(365):
     cprint('================== День {} =================='.format(day), color='red')
     serge.act()
     masha.act()
+    jonh.act()
     hulk.act()
     cprint(serge, color='cyan')
     cprint(masha, color='cyan')
-    cprint(home, color='cyan')
+    cprint(jonh, color='cyan')
     cprint(hulk, color='cyan')
+    cprint(home, color='cyan')
     home.dirt += 5
 print()
 
