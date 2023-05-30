@@ -70,28 +70,29 @@ class Husband:
     def act(self):
         if self.fullness <= 0:
             cprint(f'💀{self.name} умер от голода💀', color='red')
-            return
+            return True
         elif self.happiness < 10:
             cprint(f'💀{self.name} умер от депрессии💀', color='red')
-            return
+            return True
         if self.house.dirt > 90:
             self.happiness -= 10
-        dice = randint(1, 6)
-        if self.fullness < 30:
+        dice = randint(1, 10)
+        if dice == 1:
+            self.pet_the_cat()
+        elif self.fullness < 30:
             self.eat()
         elif self.happiness < 30:
             self.gaming()
-        elif dice == 1:
-            self.pet_the_cat()
         else:
             self.work()
 
 
     def eat(self):
-        self.fullness += 30
-        self.house.food_in_the_fridge -= 30
-        cprint(f'{self.name} покушал. Сытость {self.fullness}, еда в холодильнике {self.house.food_in_the_fridge}',
-               color='light_cyan')
+        if self.house.food_in_the_fridge >= 30:
+            self.fullness += 30
+            self.house.food_in_the_fridge -= 30
+            cprint(f'{self.name} покушал. Сытость {self.fullness}, еда в холодильнике {self.house.food_in_the_fridge}',
+                color='light_cyan')
 
     def work(self):
         self.fullness -= 10
@@ -107,7 +108,7 @@ class Husband:
     def pet_the_cat(self):
         self.happiness += 5
         self.fullness -= 10
-        cprint(f'{self.name} погладила кота. Счастье {self.house.dirt}', color='light_magenta')
+        cprint(f'{self.name} погладил кота. Счастье {self.happiness}', color='light_magenta')
 
 
 class Wife:
@@ -126,14 +127,16 @@ class Wife:
     def act(self):
         if self.fullness <= 0:
             cprint(f'💀{self.name} умерла от голода💀', color='red')
-            return
+            return True
         elif self.happiness < 10:
             cprint(f'💀{self.name} умерла от депрессии💀', color='red')
-            return
+            return True
         if self.house.dirt > 90:
             self.happiness -= 10
-        dice = randint(1, 6)
-        if self.house.food_in_the_fridge < 60:
+        dice = randint(1, 10)
+        if dice == 1:
+            self.pet_the_cat()
+        elif self.house.food_in_the_fridge < 60:
             self.shopping()
         elif self.happiness < 30:
             self.buy_fur_coat()
@@ -141,24 +144,29 @@ class Wife:
             self.buy_cat_food()
         elif self.house.dirt > 110:
             self.clean_house()
-        elif dice == 1:
-            self.pet_the_cat()
         else:
             self.eat()
 
     def eat(self):
-        self.fullness += 30
-        self.house.food_in_the_fridge -= 30
-        cprint(f'{self.name} покушалa. Сытость {self.fullness}, еда в холодильнике {self.house.food_in_the_fridge}',
-               color='light_magenta')
+        if self.house.food_in_the_fridge >= 30:
+            self.fullness = self.fullness + 30 if self.fullness <= 70 else 100
+            self.house.food_in_the_fridge -= 30
+            cprint(f'{self.name} покушалa. Сытость {self.fullness}, еда в холодильнике {self.house.food_in_the_fridge}',
+                color='light_magenta')
 
     def shopping(self):
-        self.house.food_in_the_fridge += 150
-        self.house.money_in_the_nightstand -= 150
-        self.fullness -= 10
-        cprint(f'{self.name} купила еды. Сытость {self.fullness}, еда в холодильнике {self.house.food_in_the_fridge}',
-               color='light_magenta')
-
+        if self.house.money_in_the_nightstand >= 150:
+            self.house.money_in_the_nightstand -= 150
+            self.house.food_in_the_fridge += 150
+            self.fullness -= 10
+            cprint(f'{self.name} купила еды. Сытость {self.fullness}, еда в холодильнике {self.house.food_in_the_fridge}',
+                color='light_magenta')
+        else:
+            self.fullness -= 10
+            self.happiness -= 10
+            cprint(f'{self.name} не купила еды. Сытость {self.fullness}, еда в холодильнике {self.house.food_in_the_fridge}',
+                color='red')
+            
     def buy_fur_coat(self):
         self.happiness += 60
         self.house.money_in_the_nightstand -= 350
@@ -177,6 +185,7 @@ class Wife:
     def buy_cat_food(self):
         self.house.money_in_the_nightstand -= 50
         self.house.cat_food += 50
+        cprint(f'{self.name} купила еду кошке. Еды у кошки {self.house.cat_food}', color='light_magenta')
 
 class Cat:
 
@@ -230,9 +239,10 @@ class Child(Husband, Wife):
             self.sleep()
 
     def eat(self):
-        self.fullness += 10
-        self.house.food_in_the_fridge -= 10
-        print(f'{self.name} покушал. Сытость {self.fullness}')
+        if self.house.food_in_the_fridge >= 30:
+            self.fullness += 10
+            self.house.food_in_the_fridge -= 10
+            print(f'{self.name} покушал. Сытость {self.fullness}')
 
     def sleep(self):
         self.fullness -= 10
@@ -244,20 +254,34 @@ masha = Wife(name='Маша')
 hulk = Cat(name='Халк')
 jonh = Child(name='Джон')
 
-for day in range(365):
-    cprint('================== День {} =================='.format(day), color='red')
-    serge.act()
-    masha.act()
-    jonh.act()
-    hulk.act()
-    cprint(serge, color='cyan')
-    cprint(masha, color='cyan')
-    cprint(jonh, color='cyan')
-    cprint(hulk, color='cyan')
-    cprint(home, color='cyan')
-    home.dirt += 5
-print()
-
+list_days = []
+day = 0
+for i in range(10):
+    home = House()
+    serge = Husband(name='Сережа')
+    masha = Wife(name='Маша')
+    hulk = Cat(name='Халк')
+    jonh = Child(name='Джон')
+    day = 0
+    while True:
+        day += 1
+        cprint('================== День {} =================='.format(day), color='red')
+        status1 = serge.act()
+        status2 = masha.act()
+        jonh.act()
+        hulk.act()
+        cprint(serge, color='cyan')
+        cprint(masha, color='cyan')
+        cprint(jonh, color='cyan')
+        cprint(hulk, color='cyan')
+        cprint(home, color='cyan')
+        home.dirt += 15
+        if status1 and status2:
+            list_days.append(day)
+            break
+    print()
+print(list_days)
+print(sum(list_days)/len(list_days))
 # TODO после реализации первой части - отдать на проверку учителю
 
 ######################################################## Часть вторая
