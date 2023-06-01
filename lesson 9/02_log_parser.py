@@ -23,16 +23,22 @@
 
 class LogParser():
 
-    def __init__(self, filename, output_filename):
+    def __init__(self, filename, output_filename, sorting_key='minutes'):
         self.filename = filename
         self.output_filename = output_filename
         self.count = 0
+        self.sorting_key = sorting_key
 
     def _first_date_and_event(self):
         with open(self.filename, mode='r', encoding='utf8') as log_file:
             line = log_file.readline()
-            self.minute_prev_line = line[line.index(' ') + 5]
+            self.sorting = {'minutes': line.index(' ') + 5,
+                            'hours': line.index(' ') + 3,
+                            'month': line.index('-') + 3,
+                            'year': line.index('-') - 1}
+            self.minute_prev_line = line[self.sorting{self.sorting_key}]
             self.prev_date = line[:line.index(' ') + 6]
+
 
     def parse(self):
         self._first_date_and_event()
