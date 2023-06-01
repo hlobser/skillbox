@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import zipfile
+from operator import itemgetter
 
 
 # Подсчитать статистику по буквам в романе Война и Мир.
@@ -51,29 +52,32 @@ class Statistic:
                         self.stat[char] = self.stat.get(char, 0) + 1
                         self.count += 1
 
-    def sorting(self):
-        self.stat = dict(sorted(self.stat.items(), key=lambda x: (x[1], x[0]), reverse=True))
+    def sorting(self, key=1, reverse=1):
+
+        self.stat = dict(sorted(self.stat.items(), key=itemgetter(key), reverse=reverse))
 
     def output_table(self):
-        print(f'''+---------+----------+
-|  буква  | частота  |
-+---------+----------+''')
+        print(
+f'''+---------+-----------+
+|  буква  | частота   |
++---------+-----------+''')
         for key, value in self.stat.items():
             print(f'''|    {key}    |   {value:6d}  |''')
-        print(f'''+---------+----------+
-|  итого  | {self.count}  |
-+---------+----------+''')
+        print(
+f'''+---------+-----------+
+|  итого  |  {self.count}  |
++---------+-----------+''')
 
 
 stasistic = Statistic(file_name='python_snippets\\voyna-i-mir.txt.zip')
 stasistic.unzip()
 stasistic.collect()
-stasistic.sorting()
+stasistic.sorting(key=1, reverse=1)
 stasistic.output_table()
 
 
 # После выполнения первого этапа нужно сделать упорядочивание статистики
-#  - по частоте по возрастанию
-#  - по алфавиту по возрастанию
-#  - по алфавиту по убыванию
+#  - по частоте по возрастанию (key=1, reverse=0)
+#  - по алфавиту по возрастанию  (key=0, reverse=0)
+#  - по алфавиту по убыванию  (key=0, reverse=1)
 # Для этого пригодится шаблон проектирование "Шаблонный метод" см https://goo.gl/Vz4828
