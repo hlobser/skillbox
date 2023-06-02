@@ -20,10 +20,9 @@
 # Требования к коду: он должен быть готовым к расширению функциональности. Делать сразу на классах.
 
 # TODO здесь ваш код
-
 class LogParser():
 
-    def __init__(self, filename, output_filename, sorting_key='minutes'):
+    def __init__(self, filename, output_filename, sorting_key='minute'):
         self.filename = filename
         self.output_filename = output_filename
         self.count = 0
@@ -32,30 +31,31 @@ class LogParser():
     def _first_date_and_event(self):
         with open(self.filename, mode='r', encoding='utf8') as log_file:
             line = log_file.readline()
-            self.sorting = {'minutes': line.index(' ') + 5,
-                            'hours': line.index(' ') + 3,
-                            'month': line.index('-') + 3,
+            self.sorting = {'minute': line.index(' ') + 5,
+                            'hour': line.index(' ') + 2,
+                            'month': line.index('-') + 2,
                             'year': line.index('-') - 1}
-            self.minute_prev_line = line[self.sorting{self.sorting_key}]
-            self.prev_date = line[:line.index(' ') + 6]
-
+            self.time_prev_line = line[self.sorting[self.sorting_key]]
+            self.prev_date = line[:self.sorting[self.sorting_key] + 1]
 
     def parse(self):
         self._first_date_and_event()
         with open(self.filename, mode='r', encoding='utf8') as log_file:
             for line in log_file:
-                self.date, self.event = line[:line.index(' ') + 6], line[line.index(']') + 1:]
-                self.minute_this_line = self.date[-1]
+                self.date, self.event = line[:self.sorting[self.sorting_key] + 1], line[line.index(']') + 1:]
+                self.time_this_line = self.date[-1]
                 self._count_events()
+            if self.count:
+                self._write_file()
 
     def _count_events(self):
-        if self.minute_this_line == self.minute_prev_line:
+        if self.time_this_line == self.time_prev_line:
             if 'NOK' in self.event:
                 self.count += 1
         else:
             if self.count:
                 self._write_file()
-            self.minute_prev_line = self.minute_this_line
+            self.time_prev_line = self.time_this_line
             self.prev_date = self.date
             self.count = 0
             if 'NOK' in self.event:
@@ -63,11 +63,14 @@ class LogParser():
 
     def _write_file(self):
         with open(self.output_filename, mode='a', encoding='utf8') as count_file:
-            text = f'{self.prev_date}] {str(self.count)}\n'
+            if self.sorting_key == 'minute' or self.sorting_key == 'hour':
+                text = f'{self.prev_date}:00] {str(self.count)}\n'
+            elif self.sorting_key == 'month' or self.sorting_key == 'year':
+                text = f'{self.prev_date}] {str(self.count)}\n'
             count_file.write(text)
 
 
-parser = LogParser(filename='events.txt', output_filename='count_of_events.txt')
+parser = LogParser(filename='events.txt', output_filename='count_of_events.txt', sorting_key='minute')
 parser.parse()
 
 

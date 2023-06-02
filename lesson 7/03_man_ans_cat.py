@@ -81,7 +81,7 @@ class Man:
 
     def pick_up_a_cat(self, name):
         self.cat = name
-        self.cat.owner = self
+        self.cat.result = self
         self.cat.house = self.house
         cprint('{} Подобрал кота и назвал его {}' .format(self.name, self.cat.name), color='cyan')
 
