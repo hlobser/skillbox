@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os, time, shutil
+from abc import abstractmethod, ABCMeta
+
 
 # Нужно написать скрипт для упорядочивания фотографий (вообще любых файлов)
 # Скрипт должен разложить файлы из одной папки по годам и месяцам в другую.
@@ -35,9 +37,9 @@ import os, time, shutil
 # Требования к коду: он должен быть готовым к расширению функциональности. Делать сразу на классах.
 
 # TODO здесь ваш код
-class SortingPhotos():
+class MovingPhotos(metaclass=ABCMeta): # родительский класс
 
-    def __init__(self, folder_to_scan='icons', target_folder='icons_by_year'):
+    def __init__(self, folder_to_scan, target_folder):
         self.folder_to_scan = folder_to_scan
         self.target_folder = target_folder
 
@@ -49,43 +51,61 @@ class SortingPhotos():
                     self.full_path = os.path.join(dirpath, self.filename)
                     self._get_photo_info()
                     self._create_folders()
-                    self._copy_file()
+                    self._replace_file()
+        self._delete_empty_folders()
 
     def _get_photo_info(self):
         time_sec = os.path.getctime(self.full_path)
         time_utc = time.gmtime(time_sec)
-        self.year = time_utc[0]
-        self.month = time_utc[1]
+        self.year = str(time_utc[0])
+        self.month = str(time_utc[1])
+
+    @abstractmethod
+    def _create_folders(self):
+        pass
+
+    @abstractmethod
+    def _replace_file(self):
+        pass
+
+    @abstractmethod
+    def _delete_empty_folders(self):
+        pass
+
+
+class ReplacePhotosForDate(MovingPhotos):
 
     def _create_folders(self):
-        os.makedirs(f'{self.target_folder}\\{self.year}\\{self.month}', exist_ok=True)
+        os.makedirs(os.path.join(self.target_folder, self.year, self.month), exist_ok=True)
 
-    def _copy_file(self):
-        shutil.copy2(self.full_path, f'{self.target_folder}\\{self.year}\\{self.month}')
+    def _replace_file(self):
+        os.replace(self.full_path, os.path.join(self.target_folder, self.year, self.month, self.filename))
 
-    # def replace_file(self):
-    #     os.replace(self.full_path, os.path.join(f'{self.target_folder}\\{self.year}\\{self.month}', self.filename))
-
-
-copy_photos = SortingPhotos()
-copy_photos.sorting()
+    def _delete_empty_folders(self):
+        shutil.rmtree(self.folder_to_scan)
 
 
 
+class ReplacePhotosInHeap(MovingPhotos):
 
-# path = os.path.abspath('icons')
-# for dirpath, _, filename_list in os.walk(path):
-#     if filename_list:
-#         for filename in filename_list:
-#             full_path = os.path.join(dirpath, filename)
-#             time_sec = os.path.getctime(full_path)
-#             time_utc = time.gmtime(time_sec)
-#             year = time_utc[0]
-#             month = time_utc[1]
-#             # os.makedirs(f'icons_by_year\\{year}\\{month}', exist_ok=True)
-#             # shutil.copy2(full_path, f'icons_by_year\\{year}\\{month}')
-#             os.remove(f'icons_by_year\\{year}\\{month}\\{filename}')
-#         os.removedirs(f'icons_by_year\\{year}\\{month}')
+    def _create_folders(self):
+        os.makedirs(self.target_folder, exist_ok=True)
+
+    def _replace_file(self):
+        os.replace(self.full_path, os.path.join(self.target_folder, self.filename))
+
+    def _delete_empty_folders(self):
+        shutil.rmtree(os.path.join(self.folder_to_scan))
+
+
+# sort_by_date = ReplacePhotosForDate(folder_to_scan='icons', target_folder='icons_by_year')
+# sort_by_date.sorting()
+
+sort_in_heap = ReplacePhotosInHeap(folder_to_scan='icons_by_year', target_folder='icons')
+sort_in_heap.sorting()
+
+
+
 
 
 
@@ -93,9 +113,3 @@ copy_photos.sorting()
 # Нужно обрабатывать zip-файл, содержащий фотографии, без предварительного извлечения файлов в папку.
 # Основная функция должна брать параметром имя zip-файла и имя целевой папки.
 # Для этого пригодится шаблон проектирование "Шаблонный метод" см https://goo.gl/Vz4828
-# path = os.path.abspath('address-book-new.png')
-# os.makedirs('a', exist_ok=True)
-# shutil.copy2(path, 'a\\address-book-new.png')
-# os.remove('a\\address-book-new.png')
-# os.rmdir('a')                               #удалить директорий
-# os.replace(path, 'a\\address-book-new.png')
