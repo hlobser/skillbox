@@ -61,19 +61,19 @@ def get_prime_numbers(n):
 # Распечатать все простые числа до 10000 в столбик
 
 
-def prime_numbers_generator(n):
-    prime_numbers = []
-    for number in range(2, n+1):
-        for prime in prime_numbers:
-            if number % prime == 0:
-                break
-        else:
-            prime_numbers.append(number)
-            yield number
-
-
-for number in prime_numbers_generator(n=10):
-    print(number)
+# def prime_numbers_generator(n):
+#     prime_numbers = []
+#     for number in range(2, n+1):
+#         for prime in prime_numbers:
+#             if number % prime == 0:
+#                 break
+#         else:
+#             prime_numbers.append(number)
+#             yield number
+#
+#
+# for number in prime_numbers_generator(n=10):
+#     print(number)
 
 
 # Часть 3
@@ -91,3 +91,32 @@ for number in prime_numbers_generator(n=10):
 # простых счастливых палиндромных чисел и так далее. Придумать не менее 2х способов.
 #
 # Подсказка: возможно, нужно будет добавить параметр в итератор/генератор.
+
+def is_lucky(number):
+    num_len = len(str(number))
+    # если длина числа четная, то делим число пополам, если нет, то выкидываем среднее число
+    left_half, right_half = str(number)[:num_len // 2], str(number)[num_len // 2 + num_len % 2:]
+    left_sum, right_sum = sum([int(i) for i in left_half]), sum([int(j) for j in right_half])
+    return left_sum == right_sum
+
+
+def is_palindrome(number):
+    number = str(number)
+    return number == number[::-1]
+
+def prime_numbers_generator(n):
+    prime_numbers = []
+    for number in range(2, n+1):
+        for prime in prime_numbers:
+            if number % prime == 0:
+                break
+        else:
+            prime_numbers.append(number)
+            if is_palindrome(number) and is_lucky(number):
+                yield number
+
+
+for number in prime_numbers_generator(n=10000):
+    print(number)
+# def is_vampire():
+#     pass
