@@ -9,7 +9,15 @@
 
 
 def log_errors(func):
-    pass
+    def dick(*args, **kwargs):
+        try:
+            func(*args, **kwargs)
+        except (ZeroDivisionError, ValueError, Exception) as exc:
+            with open('function_errors.log', mode='a', encoding='utf8') as file:
+                file.write(f'{func} {args, kwargs} {type(exc)} {exc}\n')
+                raise
+        return func
+    return dick
     # TODO здесь ваш код
 
 
