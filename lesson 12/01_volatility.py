@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 
 
 # Описание предметной области:
@@ -74,3 +75,59 @@
 #         <обработка данных>
 
 # TODO написать код в однопоточном/однопроцессорном стиле
+class TradeParser():
+
+    def __init__(self, folder_to_scan):
+        self.folder_to_scan = folder_to_scan
+        self.full_path_list = []
+        self.volatility_dict = dict()
+
+    def run(self):
+        self._get_full_path()
+        self._find_volatility()
+        self._print_volatility()
+
+    def _get_full_path(self):
+        path = os.path.abspath(self.folder_to_scan)
+        for dirpath, _, filename_list in os.walk(path):
+            for filename in filename_list:
+                full_path = os.path.join(dirpath, filename)
+                self.full_path_list.append(full_path)
+
+    def _find_volatility(self):
+        for path in self.full_path_list:
+            with open(file=path) as file:
+                file.readline()  # первую линию в файле пропускаем
+                ticker_num, _, max_price, _ = file.readline().split(',')
+                max_price, min_price = float(max_price), float(max_price)
+                for line in file.readlines():
+                    s = line.split(',')
+                    price = float(s[2])
+                    if price > max_price:
+                        max_price = price
+                    if price < min_price:
+                        min_price = price
+                average_price = (max_price + min_price) / 2
+                volatility = ((max_price - min_price) / average_price) * 100
+                self.volatility_dict[ticker_num] = volatility
+
+    def _print_volatility(self):
+        zero_vol = '     '
+        for ticker_number, volatility in self.volatility_dict.copy().items():
+            if volatility == 0:
+                self.volatility_dict.pop(ticker_number)
+                zero_vol += f' ТИКЕР_{ticker_number},'
+        zero_vol = zero_vol.rstrip(',')
+        sorted_vol = sorted(self.volatility_dict.items(), key=lambda x: x[1], reverse=True)
+        print('  Максимальная волатильность:')
+        for ticker_number, volatility in sorted_vol[:3]:
+            print(f'      ТИКЕР_{ticker_number} - {volatility:.2f} %')
+        print('  Минимальная волатильность:')
+        for ticker_number, volatility in sorted_vol[-3:]:
+            print(f'      ТИКЕР_{ticker_number} - {volatility:.2f} %')
+        print('  Нулевая волатильность:')
+        print(zero_vol)
+
+
+trade = TradeParser(folder_to_scan='trades')
+trade.run()
