@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
 
+from utils import time_track
+
 
 # Описание предметной области:
 #
@@ -113,6 +115,7 @@ class TradeParser():
 
     def _print_volatility(self):
         zero_vol = '     '
+        print(len(self.volatility_dict))
         for ticker_number, volatility in self.volatility_dict.copy().items():
             if volatility == 0:
                 self.volatility_dict.pop(ticker_number)
@@ -129,5 +132,10 @@ class TradeParser():
         print(zero_vol)
 
 
-trade = TradeParser(folder_to_scan='trades')
-trade.run()
+@time_track
+def main():
+    trade = TradeParser(folder_to_scan='trades')
+    trade.run()
+
+if __name__ == '__main__':
+    main()
