@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
-from pprint import pprint
-from threading import Thread, Lock
+from threading import Thread
+from utils import time_track
 
 # Задача: вычислить 3 тикера с максимальной и 3 тикера с минимальной волатильностью в МНОГОПОТОЧНОМ стиле
 #
@@ -23,90 +23,82 @@ from threading import Thread, Lock
 
 # TODO тут ваш код в многопоточном стиле
 
-def print_volatility(volatility_summ_dict):
-    zero_vol = '     '
-    print(len(volatility_summ_dict))
-    for ticker_number, volatility in volatility_summ_dict.copy().items():
-        if volatility == 0:
-            volatility_summ_dict.pop(ticker_number)
-            zero_vol += f' ТИКЕР_{ticker_number},'
-    zero_vol = zero_vol.rstrip(',')
-    sorted_vol = sorted(volatility_summ_dict.items(), key=lambda x: x[1], reverse=True)
-    print('  Максимальная волатильность:')
-    for ticker_number, volatility in sorted_vol[:3]:
-        print(f'      ТИКЕР_{ticker_number} - {volatility:.2f} %')
-    print('  Минимальная волатильность:')
-    for ticker_number, volatility in sorted_vol[-3:]:
-        print(f'      ТИКЕР_{ticker_number} - {volatility:.2f} %')
-    print('  Нулевая волатильность:')
-    print(zero_vol)
 
-def get_full_path(folder_to_scan):
-    full_path_list = []
-    path = os.path.abspath(folder_to_scan)
-    for dirpath, _, filename_list in os.walk(path):
-        for filename in filename_list:
-            full_path = os.path.join(dirpath, filename)
-            full_path_list.append(full_path)
-    return full_path_list
-
-def chuncs(row, n):
-    res = []
-    for elem in row:
-        if res and len(res[-1]) != n:
-            res[-1].append(elem)
-        else:
-            res.append([elem])
-    return res
-
-class TradeParser(Thread):
-
-
-    def __init__(self, path, lock, volatility_summ_dict, *args, **kwargs):
+class FindVolatility(Thread):
+    def __init__(self, path, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.path = path
         self.volatility_dict = dict()
-        self.lock = lock
-        self.volatility_summ_dict = volatility_summ_dict
 
     def run(self):
-        self._find_volatility()
-        with self.lock:
-            self.volatility_summ_dict.update(self.volatility_dict)
-
-    def _find_volatility(self):
-        for path1 in self.path:
-            with open(file=path1) as file:
-                file.readline()  # первую линию в файле пропускаем
-                ticker_num, _, max_price, _ = file.readline().split(',')
-                max_price, min_price = float(max_price), float(max_price)
-                for line in file.readlines():
-                    s = line.split(',')
-                    price = float(s[2])
-                    if price > max_price:
-                        max_price = price
-                    if price < min_price:
-                        min_price = price
-                average_price = (max_price + min_price) / 2
-                volatility = ((max_price - min_price) / average_price) * 100
-                # with self.lock:
-                self.volatility_dict[ticker_num] = volatility
+        with open(file=self.path) as file:
+            file.readline()  # первую линию в файле пропускаем
+            ticker_num, _, max_price, _ = file.readline().split(',')
+            max_price, min_price = float(max_price), float(max_price)
+            for line in file.readlines():
+                s = line.split(',')
+                price = float(s[2])
+                if price > max_price:
+                    max_price = price
+                if price < min_price:
+                    min_price = price
+            average_price = (max_price + min_price) / 2
+            volatility = ((max_price - min_price) / average_price) * 100
+            self.volatility_dict[ticker_num] = volatility
+            TradeParser.volatility_summ_dict.update(self.volatility_dict)
 
 
+class TradeParser:
+    volatility_summ_dict = {}
+
+    def __init__(self, folder_to_scan, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.folder_to_scan = folder_to_scan
+        self.full_path_list = []
+
+    def run(self):
+        self._get_full_path()
+        find_vol_dict = [FindVolatility(path=path) for path in self.full_path_list]
+        for vol in find_vol_dict:
+            vol.start()
+        for vol in find_vol_dict:
+            vol.join()
+        self._print_volatility()
+
+    def _print_volatility(self):
+        zero_vol = '     '
+        print(len(TradeParser.volatility_summ_dict))
+        for ticker_number, volatility in TradeParser.volatility_summ_dict.copy().items():
+            if volatility == 0:
+                TradeParser.volatility_summ_dict.pop(ticker_number)
+                zero_vol += f' ТИКЕР_{ticker_number},'
+        zero_vol = zero_vol.rstrip(',')
+        sorted_vol = sorted(TradeParser.volatility_summ_dict.items(), key=lambda x: x[1], reverse=True)
+        print('  Максимальная волатильность:')
+        for ticker_number, volatility in sorted_vol[:3]:
+            print(f'      ТИКЕР_{ticker_number} - {volatility:.2f} %')
+        print('  Минимальная волатильность:')
+        for ticker_number, volatility in sorted_vol[-3:]:
+            print(f'      ТИКЕР_{ticker_number} - {volatility:.2f} %')
+        print('  Нулевая волатильность:')
+        print(zero_vol)
+
+    def _get_full_path(self):
+        path = os.path.abspath(self.folder_to_scan)
+        for dirpath, _, filename_list in os.walk(path):
+            for filename in filename_list:
+                full_path = os.path.join(dirpath, filename)
+                self.full_path_list.append(full_path)
 
 
+@time_track
+def main():
+    trade = TradeParser(folder_to_scan='trades')
+    trade.run()
 
-path_list = get_full_path(folder_to_scan='trades')
-path_chunked_4 = chuncs(path_list, 28)
 
-volatility_summ_dict = dict()
-lock = Lock()
+if __name__ == '__main__':
+    main()
 
-trades = [TradeParser(path=path, volatility_summ_dict=volatility_summ_dict, lock=lock) for path in path_chunked_4]
-for trade in trades:
-    trade.start()
-for trade in trades:
-    trade.join()
-print_volatility(volatility_summ_dict)
 
 
