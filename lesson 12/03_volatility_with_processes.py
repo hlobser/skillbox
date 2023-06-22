@@ -33,22 +33,22 @@ class FindVolatility(Process):
         self.collector = collector
 
     def run(self):
-        with open(file=self.path) as file:
-            file.readline()  # первую линию в файле пропускаем
-            ticker_num, _, max_price, _ = file.readline().split(',')
-            max_price, min_price = float(max_price), float(max_price)
-            for line in file.readlines():
-                s = line.split(',')
-                price = float(s[2])
-                if price > max_price:
-                    max_price = price
-                if price < min_price:
-                    min_price = price
-            average_price = (max_price + min_price) / 2
-            volatility = ((max_price - min_price) / average_price) * 100
-            self.volatility_dict[ticker_num] = volatility
-            self.collector.put(self.volatility_dict.copy())
-
+        for path_1 in self.path:
+            with open(file=path_1) as file:
+                file.readline()  # первую линию в файле пропускаем
+                ticker_num, _, max_price, _ = file.readline().split(',')
+                max_price, min_price = float(max_price), float(max_price)
+                for line in file.readlines():
+                    s = line.split(',')
+                    price = float(s[2])
+                    if price > max_price:
+                        max_price = price
+                    if price < min_price:
+                        min_price = price
+                average_price = (max_price + min_price) / 2
+                volatility = ((max_price - min_price) / average_price) * 100
+                self.volatility_dict[ticker_num] = volatility
+                self.collector.put(self.volatility_dict.copy())
 
 
 class ProcessParser:
@@ -61,7 +61,7 @@ class ProcessParser:
 
     def run(self):
         self._get_full_path()
-        find_vol_dict = [FindVolatility(path=path, collector=ProcessParser.collector) for path in self.full_path_list]
+        find_vol_dict = [FindVolatility(path=path, collector=ProcessParser.collector) for path in self.split_process()]
         for vol in find_vol_dict:
             vol.start()
         for vol in find_vol_dict:
@@ -70,7 +70,6 @@ class ProcessParser:
             volatility_dict = ProcessParser.collector.get()
             ProcessParser.volatility_summ_dict.update(volatility_dict)
         self._print_volatility()
-
 
     def _print_volatility(self):
         zero_vol = '     '
@@ -96,6 +95,15 @@ class ProcessParser:
             for filename in filename_list:
                 full_path = os.path.join(dirpath, filename)
                 self.full_path_list.append(full_path)
+
+    def split_process(self, num_of_process=6):  # num_of_process максимум 6
+        splited_path = []
+        for elem in self.full_path_list:
+            if splited_path and len(splited_path[-1]) != num_of_process:
+                splited_path[-1].append(elem)
+            else:
+                splited_path.append([elem])
+        return splited_path
 
 
 @time_track
